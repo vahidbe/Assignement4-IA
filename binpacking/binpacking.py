@@ -133,17 +133,19 @@ def randomized_maxvalue(problem, limit=100, callback=None):
     current = LSNode(problem, problem.initial, 0)
     best = current
     minusBestEstimation = problem.value(current.state)
+    counter = 0
     for i in range(limit):
         heap = []
         for neighbour in current.expand():
+            counter = counter + 1
             estimate = problem.value(neighbour.state)
             if len(heap) >= 5:
                 if estimate < minusBestEstimation:
-                    heap[-1] = (estimate, random.randint(-1-sys.maxsize,sys.maxsize), neighbour)
+                    heap[-1] = (estimate, counter, neighbour)
                     heapq.heapify(heap)
                     minusBestEstimation = heap[-1][0]
             else:
-                heapq.heappush(heap, (estimate, random.randint(-1-sys.maxsize,sys.maxsize), neighbour))
+                heapq.heappush(heap, (estimate, counter, neighbour))
                 minusBestEstimation = heap[-1][0]
         best = heap[random.randint(0, 4)][2]
         current = best
@@ -158,15 +160,18 @@ def hash(state):
 #       Launch      #
 #####################
 if __name__ == '__main__':
-    info = read_instance(sys.argv[1])
-    init_state = State(info[0], info[1])
-    bp_problem = BinPacking(init_state)
-    step_limit = 100
-    node = maxvalue(bp_problem, step_limit)
-    state = node.state
-    print("maxvalue")
-    print(state)
-    node = randomized_maxvalue(bp_problem, step_limit)
-    state = node.state
-    print("randomized_maxvalue")
-    print(state)
+    for i in range(1, sys.argv.__len__()):
+        info = read_instance(sys.argv[i])
+        init_state = State(info[0], info[1])
+        bp_problem = BinPacking(init_state)
+        step_limit = 100
+        node1 = maxvalue(bp_problem, step_limit)
+        state1 = node1.state
+        #print("maxvalue")
+        #print(state1)
+        node2 = randomized_maxvalue(bp_problem, step_limit)
+        state2 = node2.state
+        #print("randomized_maxvalue")
+        #print(state2)
+        print("===Instance "+str(i)+"===")
+        print("Number of bins:\n  maxvalue: "+str(state1.bins.__len__())+"\n  randomized_maxvalue: "+str(state2.bins.__len__())+"\n")

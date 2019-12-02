@@ -1,0 +1,1 @@
+& F:/Programmation/Python/python.exe d:/User/Documents/Github/Assignement4-IA/binpacking/binpacking.py instances/i01.txt instances/i02.txt instances/i03.txt instances/i04.txt instances/i05.txt instances/i06.txt instances/i07.txt instances/i08.txt instances/i09.txt instances/i10.txt
