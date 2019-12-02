@@ -120,6 +120,16 @@ def read_instance(instanceFile):
 def maxvalue(problem, limit=100, callback=None):
     current = LSNode(problem, problem.initial, 0)
     best = current
+    bestEstimation = problem.value(current)
+    for i in range(limit):
+        for neighbour in current.expend():
+            estimate = problem.value(neighbour.state)
+            if estimate < bestEstimation:
+                bestEstimation = estimate
+                best = neighbour
+        current = best
+    return best
+
 
     # Put your code here
 
