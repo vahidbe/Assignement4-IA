@@ -122,9 +122,9 @@ def read_instance(instanceFile):
 def maxvalue(problem, limit=100, callback=None):
     current = LSNode(problem, problem.initial, 0)
     best = current
-    bestEstimation = problem.value(current)
+    bestEstimation = problem.value(current.state)
     for i in range(limit):
-        for neighbour in current.expend():
+        for neighbour in current.expand():
             estimate = problem.value(neighbour.state)
             if estimate < bestEstimation:
                 bestEstimation = estimate
@@ -137,19 +137,19 @@ def maxvalue(problem, limit=100, callback=None):
 def randomized_maxvalue(problem, limit=100, callback=None):
     current = LSNode(problem, problem.initial, 0)
     best = current
-    minusBestEstimation = problem.value(current)
+    minusBestEstimation = problem.value(current.state)
     for i in range(limit):
         heap = []
-        for neighbour in current.expend():
+        for neighbour in current.expand():
             estimate = problem.value(neighbour.state)
             if len(heap) >= 5:
                 if estimate < minusBestEstimation:
-                    heap[len(heap)-1] = [estimate, neighbour]
+                    heap[-1] = (estimate, neighbour)
                     heapq.heapify(heap)
-                    minusBestEstimation = heap[len(heap)-1][0]
+                    minusBestEstimation = heap[-1][0]
             else:
-                heapq.heappush(heap, [estimate, neighbour])
-                minusBestEstimation = heap[len(heap)-1][0]
+                heapq.heappush(heap, (estimate, neighbour))
+                minusBestEstimation = heap[-1][0]
         best = heap[random.randint(0, 4)][1]
         current = best
 
@@ -167,7 +167,11 @@ if __name__ == '__main__':
     init_state = State(info[0], info[1])
     bp_problem = BinPacking(init_state)
     step_limit = 100
-    #node = randomized_maxvalue(bp_problem, step_limit)
-    node = random_walk(bp_problem, step_limit)
+    node = maxvalue(bp_problem, step_limit)
     state = node.state
+    print("maxvalue")
+    print(state)
+    node = randomized_maxvalue(bp_problem, step_limit)
+    state = node.state
+    print("randomized_maxvalue")
     print(state)
