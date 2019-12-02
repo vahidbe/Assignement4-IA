@@ -99,10 +99,6 @@ class State:
 
     def move(self, i, j, k):
         item = self.bins[i].pop(j, None)
-        if (item == None):
-            print(j)
-            print(self.bins[i].keys())
-            print("ERROR NONE")
         self.bins[k][j] = item
 
 
@@ -132,7 +128,6 @@ def maxvalue(problem, limit=100, callback=None):
         current = best
     return best
 
-
 # Attention : Depending of the objective function you use, your goal can be to maximize or to minimize it
 def randomized_maxvalue(problem, limit=100, callback=None):
     current = LSNode(problem, problem.initial, 0)
@@ -144,13 +139,13 @@ def randomized_maxvalue(problem, limit=100, callback=None):
             estimate = problem.value(neighbour.state)
             if len(heap) >= 5:
                 if estimate < minusBestEstimation:
-                    heap[-1] = (estimate, neighbour)
+                    heap[-1] = (estimate, random.randint(-1-sys.maxsize,sys.maxsize), neighbour)
                     heapq.heapify(heap)
                     minusBestEstimation = heap[-1][0]
             else:
-                heapq.heappush(heap, (estimate, neighbour))
+                heapq.heappush(heap, (estimate, random.randint(-1-sys.maxsize,sys.maxsize), neighbour))
                 minusBestEstimation = heap[-1][0]
-        best = heap[random.randint(0, 4)][1]
+        best = heap[random.randint(0, 4)][2]
         current = best
 
     return best
