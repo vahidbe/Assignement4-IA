@@ -2,6 +2,8 @@
 """NAMES OF THE AUTHOR(S): Gaël Aglin <gael.aglin@uclouvain.be>"""
 from search import *
 import sys
+import heapq
+import random
 
 successorDict = {}
 fitnessDict = {}
@@ -131,16 +133,25 @@ def maxvalue(problem, limit=100, callback=None):
     return best
 
 
-    # Put your code here
-
-    return best
-
 # Attention : Depending of the objective function you use, your goal can be to maximize or to minimize it
 def randomized_maxvalue(problem, limit=100, callback=None):
     current = LSNode(problem, problem.initial, 0)
     best = current
-
-    # Put your code here
+    minusBestEstimation = problem.value(current)
+    for i in range(limit):
+        heap = []
+        for neighbour in current.expend():
+            estimate = problem.value(neighbour.state)
+            if len(heap) >= 5:
+                if estimate < minusBestEstimation:
+                    heap[len(heap)-1] = [estimate, neighbour]
+                    heapq.heapify(heap)
+                    minusBestEstimation = heap[len(heap)-1][0]
+            else:
+                heapq.heappush(heap, [estimate, neighbour])
+                minusBestEstimation = heap[len(heap)-1][0]
+        best = heap[random.randint(0, 4)][1]
+        current = best
 
     return best
 
