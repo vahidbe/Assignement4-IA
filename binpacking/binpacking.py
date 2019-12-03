@@ -136,7 +136,7 @@ def maxvalue(problem, limit=100, callback=None):
                 best_solution = best
                 steps_until_best = i
         current = best
-    return best_solution, steps_until_best
+    return best_solution
 
 # Attention : Depending of the objective function you use, your goal can be to maximize or to minimize it
 def randomized_maxvalue(problem, limit=100, callback=None):
@@ -166,7 +166,7 @@ def randomized_maxvalue(problem, limit=100, callback=None):
             best = current
             steps_until_best = i
 
-    return best, steps_until_best
+    return best
 
 def hash(state):
     return state.__str__()
@@ -174,51 +174,11 @@ def hash(state):
 #####################
 #       Launch      #
 #####################
-if __name__ == '__main__':
-    for i in range(1, sys.argv.__len__()):
-        info = read_instance(sys.argv[i])
-        init_state = State(info[0], info[1])
-        bp_problem = BinPacking(init_state)
-        step_limit = 100
-        start0 = time.time()
-        node0, steps0 = maxvalue(bp_problem, step_limit)
-        end0 = time.time()
-        time0 = end0 - start0
-        state0 = node0.state
-        value0 = bp_problem.value(state0)
-        time1 = 0
-        value1 = 0
-        steps1 = 0
-        for j in range(0):
-            start1 = time.time()
-            node1, steps = random_walk(bp_problem, step_limit)
-            steps1 = steps1 + steps
-            end1 = time.time()
-            state1 = node1.state
-            value1 = value1 + bp_problem.value(state1)
-            time1 = time1 + end1 - start1            
-        time1 = time1/10
-        value1 = value1/10
-        steps1 = steps1/10
-
-        time2 = 0
-        value2 = 0
-        steps2 = 0        
-        for j in range(10):
-            start2 = time.time()
-            node2, steps = randomized_maxvalue(bp_problem, step_limit)
-            steps2 = steps2 + steps
-            end2 = time.time()
-            state2 = node2.state
-            value2 = value2 + bp_problem.value(state2)
-            time2 = time2 + end2 - start2
-        time2 = time2/10
-        value2 = value2/10
-        steps2 = steps2/10
-        start2 = time.time()
-        print("===Instance "+str(i)+"===")
-        print("Maxvalue - Random_walk - Randomized_maxvalue")
-        print("Times: "+str(time0)+" - "+str(time1)+" - "+str(time2))
-        print("Values: "+str(value0)+" - "+str(value1)+" - "+str(value2))
-        print("Steps: "+str(steps0)+" - "+str(steps1)+" - "+str(steps2))
-
+if __name__ == '__main__':    
+    info = read_instance(sys.argv[1])
+    init_state = State(info[0], info[1])
+    bp_problem = BinPacking(init_state)
+    step_limit = 100
+    node = randomized_maxvalue(bp_problem, step_limit)
+    state = node.state
+    print(state)
