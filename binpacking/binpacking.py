@@ -4,6 +4,7 @@ from search import *
 import sys
 import heapq
 import random
+import time
 
 successorDict = {}
 fitnessDict = {}
@@ -17,14 +18,11 @@ class BinPacking(Problem):
             return value
 
         action_statelist = []
-        #print(state.bins)
 
         for i in range(state.bins.__len__()):
-            #print("keys: "+str(state.bins[i].keys()))
             for j in state.bins[i].keys():
                 for k in range(state.bins.__len__()):
                     if state.can_fit(state.bins[k], state.bins[i].get(j, None)):
-                        #print("move object "+str(j)+" from "+str(i)+" to "+str(k))
                         action = "move object "+str(j)+" from "+str(i)+" to "+str(k)
                         newstate = state.copy()
                         newstate.move(i,j,k)
@@ -73,7 +71,12 @@ class State:
     # an init state building is provided here but you can change it at will
     def build_init(self):
         init = []
-        for ind, size in self.items.items():
+        items_to_sort = self.items.copy()
+        for i in range(self.items.__len__()):
+            keys = list(items_to_sort.keys())
+            rand = random.randint(0, keys.__len__()-1)
+            ind = keys[rand]
+            size = items_to_sort.pop(ind)
             if len(init) == 0 or not self.can_fit(init[-1], size):
                 init.append({ind: size})
             else:
@@ -117,24 +120,33 @@ def read_instance(instanceFile):
 # Attention : Depending of the objective function you use, your goal can be to maximize or to minimize it
 def maxvalue(problem, limit=100, callback=None):
     current = LSNode(problem, problem.initial, 0)
-    best = current
-    bestEstimation = problem.value(current.state)
+    best_solution = current
+    best_estimation = problem.value(current.state)
+    steps_until_best = 0
     for i in range(limit):
+        best = None
+        bestEstimation = 1.0
         for neighbour in current.expand():
             estimate = problem.value(neighbour.state)
             if estimate < bestEstimation:
                 bestEstimation = estimate
                 best = neighbour
+            if estimate < best_estimation:
+                best_estimation = estimate
+                best_solution = best
+                steps_until_best = i
         current = best
-    return best
+    return best_solution, steps_until_best
 
 # Attention : Depending of the objective function you use, your goal can be to maximize or to minimize it
 def randomized_maxvalue(problem, limit=100, callback=None):
     current = LSNode(problem, problem.initial, 0)
     best = current
-    minusBestEstimation = problem.value(current.state)
+    bestEstimation = problem.value(current.state)
     counter = 0
+    steps_until_best = 0
     for i in range(limit):
+        minusBestEstimation = 1.0
         heap = []
         for neighbour in current.expand():
             counter = counter + 1
@@ -147,14 +159,17 @@ def randomized_maxvalue(problem, limit=100, callback=None):
             else:
                 heapq.heappush(heap, (estimate, counter, neighbour))
                 minusBestEstimation = heap[-1][0]
-        best = heap[random.randint(0, 4)][2]
-        current = best
+        current = heap[random.randint(0, 4)][2]
+        currentEstimation = problem.value(current.state)
+        if (bestEstimation>currentEstimation):
+            bestEstimation = currentEstimation
+            best = current
+            steps_until_best = i
 
-    return best
+    return best, steps_until_best
 
 def hash(state):
     return state.__str__()
-
 
 #####################
 #       Launch      #
@@ -165,13 +180,45 @@ if __name__ == '__main__':
         init_state = State(info[0], info[1])
         bp_problem = BinPacking(init_state)
         step_limit = 100
-        node1 = maxvalue(bp_problem, step_limit)
-        state1 = node1.state
-        #print("maxvalue")
-        #print(state1)
-        node2 = randomized_maxvalue(bp_problem, step_limit)
-        state2 = node2.state
-        #print("randomized_maxvalue")
-        #print(state2)
+        start0 = time.time()
+        node0, steps0 = maxvalue(bp_problem, step_limit)
+        end0 = time.time()
+        time0 = end0 - start0
+        state0 = node0.state
+        value0 = bp_problem.value(state0)
+        time1 = 0
+        value1 = 0
+        steps1 = 0
+        for j in range(0):
+            start1 = time.time()
+            node1, steps = random_walk(bp_problem, step_limit)
+            steps1 = steps1 + steps
+            end1 = time.time()
+            state1 = node1.state
+            value1 = value1 + bp_problem.value(state1)
+            time1 = time1 + end1 - start1            
+        time1 = time1/10
+        value1 = value1/10
+        steps1 = steps1/10
+
+        time2 = 0
+        value2 = 0
+        steps2 = 0        
+        for j in range(10):
+            start2 = time.time()
+            node2, steps = randomized_maxvalue(bp_problem, step_limit)
+            steps2 = steps2 + steps
+            end2 = time.time()
+            state2 = node2.state
+            value2 = value2 + bp_problem.value(state2)
+            time2 = time2 + end2 - start2
+        time2 = time2/10
+        value2 = value2/10
+        steps2 = steps2/10
+        start2 = time.time()
         print("===Instance "+str(i)+"===")
-        print("Number of bins:\n  maxvalue: "+str(state1.bins.__len__())+"\n  randomized_maxvalue: "+str(state2.bins.__len__())+"\n")
+        print("Maxvalue - Random_walk - Randomized_maxvalue")
+        print("Times: "+str(time0)+" - "+str(time1)+" - "+str(time2))
+        print("Values: "+str(value0)+" - "+str(value1)+" - "+str(value2))
+        print("Steps: "+str(steps0)+" - "+str(steps1)+" - "+str(steps2))
+
