@@ -179,6 +179,6 @@ if __name__ == '__main__':
     init_state = State(info[0], info[1])
     bp_problem = BinPacking(init_state)
     step_limit = 100
-    node = randomized_maxvalue(bp_problem, step_limit)
+    node = maxvalue(bp_problem, step_limit)
     state = node.state
     print(state)
