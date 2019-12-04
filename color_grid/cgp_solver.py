@@ -49,6 +49,9 @@ def get_expression(size, points=None):
                     expression.append(clause6_9)
             expression.append(clause1)  
     return expression #TODO: pas correct -> index bizarres, jsp pk et il faut rajouter la contrainte sur la diagonale, voir la photo dans le git pour les numéros de clauses
+                        #J'ai regardé vraiment, genre j'ai bien passé 3h là-dessus pour comprendre, mais c'est juste incompréhensible, même avec la photo
+                        #Y a juste pas moyen et quand je crois comprendre un truc y a toujours un truc qui fait que je comprends pas
+                        #Faut que tu m'expliques ce que t'as voulu faire en croisant des clauses mais je pense qu'il faut revoir toute la structure de la réponse 
 
 
 if __name__ == '__main__':
