@@ -134,7 +134,7 @@ def maxvalue(problem, limit=100, callback=None):
                 best_solution = best
                 steps_until_best = i
         current = best
-    return best_solution
+    return best_solution,steps_until_best
 
 # Attention : Depending of the objective function you use, your goal can be to maximize or to minimize it
 def randomized_maxvalue(problem, limit=100, callback=None):
@@ -164,7 +164,7 @@ def randomized_maxvalue(problem, limit=100, callback=None):
             best = current
             steps_until_best = i
 
-    return best
+    return best,steps_until_best
 
 def hash(state):
     return state.__str__()
@@ -197,7 +197,6 @@ def possibilities(bin, item, state, already_used):
 #       Launch      #
 #####################
 
-'''
 
 if __name__ == '__main__':
     for i in range(1, sys.argv.__len__()):
@@ -221,7 +220,8 @@ if __name__ == '__main__':
         for j in range(10):
             start1 = time.time()
             print("Step : " + str(j))
-            node1, steps = random_walk(bp_problem, step_limit)
+            node1 = random_walk(bp_problem, step_limit)
+            steps = 0
             steps1 = steps1 + steps
             end1 = time.time()
             state1 = node1.state
@@ -258,10 +258,9 @@ if __name__ == '__main__':
         print("Times: "+str(time0)+" - "+str(time1)+" - "+str(time2))
         print("Bins: "+str(bins0)+" - "+str(bins1)+" - "+str(bins2))
         print("Values: "+str(value0)+" - "+str(value1)+" - "+str(value2))
-        print("Steps: "+str(steps0)+" - "+str(steps1)+" - "+str(steps2))
+        print("Steps: "+str(steps0+1)+" - "+str(steps1+1)+" - "+str(steps2+1))
 
 '''
-
 if __name__ == '__main__':
     info = read_instance(sys.argv[1])
     init_state = State(info[0], info[1])
@@ -270,3 +269,4 @@ if __name__ == '__main__':
     (node, step) = maxvalue(bp_problem, step_limit)
     state = node.state
     print(state)
+'''
