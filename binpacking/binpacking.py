@@ -205,7 +205,6 @@ if __name__ == '__main__':
         bp_problem = BinPacking(init_state)
         step_limit = 100
         start0 = time.time()
-        print("très passé")
         node0, steps0 = maxvalue(bp_problem, step_limit)
         end0 = time.time()
         time0 = end0 - start0
@@ -216,10 +215,8 @@ if __name__ == '__main__':
         value1 = 0
         steps1 = 0
         bins1 = 0
-        print("passé")
         for j in range(10):
             start1 = time.time()
-            print("Step : " + str(j))
             node1 = random_walk(bp_problem, step_limit)
             steps = 0
             steps1 = steps1 + steps
@@ -236,10 +233,8 @@ if __name__ == '__main__':
         value2 = 0
         steps2 = 0        
         bins2 = 0
-        print("présent")
         for j in range(10):
             start2 = time.time()
-            print("Step : " + str(j))
             node2, steps = randomized_maxvalue(bp_problem, step_limit)
             steps2 = steps2 + steps
             end2 = time.time()
@@ -252,7 +247,6 @@ if __name__ == '__main__':
         steps2 = steps2/10
         bins2 = bins2/10
         start2 = time.time()
-        print("futur")
         print("===Instance "+str(i)+"===")
         print("Maxvalue - Random_walk - Randomized_maxvalue")
         print("Times: "+str(time0)+" - "+str(time1)+" - "+str(time2))

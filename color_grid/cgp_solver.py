@@ -24,8 +24,7 @@ def get_expression(size, points=None):
             c = Clause(size)
             c.add_positive(point[0], point[1], point[2])
             expression.append(c)
-    for i in range(0,size):
-        for j in range(0,size):
+    for i, j in itertools.product(range(0,size), range(0,size)):
             caution = []
             caution.extend(get_line(i, j, size))
             caution.extend(get_column(i, j, size))
@@ -36,7 +35,8 @@ def get_expression(size, points=None):
                     c = Clause(size)
                     if(x, y) == (i, j):
                         d.add_positive(x, y, color)
-                        expression.append(d)
+                        if d not in expression:
+                            expression.append(d)
                     elif (x, y) in caution:
                         c.add_negative(i, j, color)
                         c.add_negative(x, y, color)
@@ -75,6 +75,6 @@ def get_diags(i, j, size):
     return diags
 
 if __name__ == '__main__':
-    expression = get_expression(2)
+    expression = get_expression(3)
     for clause in expression:
         print(clause)
