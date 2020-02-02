@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-"""NAMES OF THE AUTHOR(S): Gaël Aglin <gael.aglin@uclouvain.be>"""
+
 from search import *
 import sys
 import copy
@@ -57,7 +57,6 @@ class State:
         self.items = items
         self.bins = self.build_init()
 
-    # an init state building is provided here but you can change it at will
     def build_init(self):
         init = []
         for ind, size in self.items.items():
@@ -83,11 +82,6 @@ class State:
         return s
     
     def copy(self):
-        #newstate = State(self.capacity, self.items.copy())
-        #newstate.bins.clear()
-        #for b in self.bins:
-        #    newstate.bins.append(b.copy())
-        #return newstate
         return copy.deepcopy(self)
 
     def move(self, i, j, k):
@@ -113,7 +107,6 @@ def read_instance(instanceFile):
         line = file.readline()
     return capacitiy, items
 
-# Attention : Depending of the objective function you use, your goal can be to maximize or to minimize it
 def maxvalue(problem, limit=100, callback=None):
     current = LSNode(problem, problem.initial, 0)
     best_solution = current
@@ -136,7 +129,6 @@ def maxvalue(problem, limit=100, callback=None):
         current = best
     return best_solution,steps_until_best
 
-# Attention : Depending of the objective function you use, your goal can be to maximize or to minimize it
 def randomized_maxvalue(problem, limit=100, callback=None):
     current = LSNode(problem, problem.initial, 0)
     best = current
@@ -247,6 +239,7 @@ if __name__ == '__main__':
         steps2 = steps2/10
         bins2 = bins2/10
         start2 = time.time()
+        # We do all these prints for the logs
         print("===Instance "+str(i)+"===")
         print("Maxvalue - Random_walk - Randomized_maxvalue")
         print("Times: "+str(time0)+" - "+str(time1)+" - "+str(time2))
